@@ -72,10 +72,10 @@ int main() {
 
 
 
-    // 2. Bind
+    //bind()- 
     address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(PORT);
+    address.sin_addr.s_addr = INADDR_ANY;   //INADOR_ANY: listen everywhere available, not just a specific IP 
+    address.sin_port = htons(PORT);     //setting port to 8080/converts port # to network byte order (htons)
     if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) == -1) {
         perror("bind"); exit(1);
     }
