@@ -11,50 +11,14 @@
 #define MAX_EVENTS 10
 #define MAX_CLIENTS 100
 
-
-
 int clients[MAX_CLIENTS];   //numbers representing currently connected clients. set to max (100) 
 int client_count = 0;       //tracks how many cleints are in the array 
 
-
-//set_nonblocking() - makes a socket non-blocking, read/accept return instantly. 
-// (fcntl -> linux system call, allows you to get/change properties of a file descriptor)
-void set_nonblocking(int fd) {
-    int flags = fcntl(fd, F_GETFL, 0);      //F_GETFL = get flags
-    fcntl(fd, F_SETFL, flags | O_NONBLOCK);     //F_SETFL = set flags OR adds 0_NONBLOCK to existing flags 
-}
-
-
-
-//add client fd to list 
-void add_client(int fd) {
-    clients[client_count++] = fd;
-}
-
-
-
-//remove client fd friom list 
-void remove_client(int fd) {
-    for (int i = 0; i < client_count; i++) {
-        if (clients[i] == fd) {
-            clients[i] = clients[--client_count];   //replace with last 
-            break;
-        }
-    }
-}
-
-//void broadcast() - iterates through clients and sends char *message to everyone but the sender
-void broadcast(int sender_fd, char *message, int len) {
-    for (int i = 0; i < client_count; i++) {
-        if (clients[i] != sender_fd) { 
-            write(clients[i], message, len);
-        }
-    }
-}
-
-
-
-
+// Prototypes
+void set_nonblocking(int fd);
+void add_client(int fd);
+void remove_client(int fd);
+void broadcast(int sender_fd, char *message, int len);
 
 
 int main() {
@@ -62,15 +26,12 @@ int main() {
     struct sockaddr_in address;   //holds ip address/port #
     int addrlen = sizeof(address); 
 
-
     //socket() - creates server socket/returns file descriptor 
     server_fd = socket(AF_INET, SOCK_STREAM, 0); //AF_INET: use IPv4 | SOCK_STREAM: use TCP | 0: lets OS pick protocol 
     if (server_fd == -1) { perror("socket"); exit(1); }
 
     int opt = 1;
     setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));     //setsockopt() - allows port reuse after server restart 
-
-
 
     //bind()- 
     address.sin_family = AF_INET;
@@ -144,4 +105,35 @@ int main() {
 
     close(server_fd);
     return 0;
+}
+
+//set_nonblocking() - makes a socket non-blocking, read/accept return instantly. 
+// (fcntl -> linux system call, allows you to get/change properties of a file descriptor)
+void set_nonblocking(int fd) {
+    int flags = fcntl(fd, F_GETFL, 0);      //F_GETFL = get flags
+    fcntl(fd, F_SETFL, flags | O_NONBLOCK);     //F_SETFL = set flags OR adds 0_NONBLOCK to existing flags 
+}
+
+//add client fd to list 
+void add_client(int fd) {
+    clients[client_count++] = fd;
+}
+
+//remove client fd friom list 
+void remove_client(int fd) {
+    for (int i = 0; i < client_count; i++) {
+        if (clients[i] == fd) {
+            clients[i] = clients[--client_count];   //replace with last 
+            break;
+        }
+    }
+}
+
+//void broadcast() - iterates through clients and sends char *message to everyone but the sender
+void broadcast(int sender_fd, char *message, int len) {
+    for (int i = 0; i < client_count; i++) {
+        if (clients[i] != sender_fd) { 
+            write(clients[i], message, len);
+        }
+    }
 }
