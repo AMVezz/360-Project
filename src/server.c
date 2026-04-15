@@ -58,17 +58,19 @@ void broadcast(int sender_fd, char *message, int len) {
 
 
 int main() {
-    int server_fd;
-    struct sockaddr_in address;
-    int addrlen = sizeof(address);
+    int server_fd;    //file descriptor for server socket 
+    struct sockaddr_in address;   //holds ip address/port #
+    int addrlen = sizeof(address); 
 
-    // 1. Create server socket
-    server_fd = socket(AF_INET, SOCK_STREAM, 0);
+
+    //socket() - creates server socket/returns file descriptor 
+    server_fd = socket(AF_INET, SOCK_STREAM, 0); //AF_INET: use IPv4 | SOCK_STREAM: use TCP | 0: lets OS pick protocol 
     if (server_fd == -1) { perror("socket"); exit(1); }
 
-    // Allow reuse of port immediately after restart
     int opt = 1;
-    setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+    setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));     //setsockopt() - allows port reuse after server restart 
+
+
 
     // 2. Bind
     address.sin_family = AF_INET;
