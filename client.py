@@ -5,8 +5,8 @@ import threading
 
 # server connection settings
 
-HOST = "127.0.0.1"
-PORT = 9090
+HOST = "18.219.247.150"
+PORT = 8080
 
 class ChatApp:
     def __init__(self, root):
