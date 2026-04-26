@@ -46,8 +46,7 @@ The server uses an event-driven model to handle multiple clients. Instead of cre
 
 ### 2. Network Programming
 
-The project uses POSIX sockets to establish communication between clients and the server. Core functions such as `socket()`, `bind()`, `listen()`, `accept()`, and `recv()/send()` were used to implement the networking layer.
-
+The project uses POSIX sockets to establish communication between clients and the server.
 ### 3. System-Level I/O
 
 Low-level I/O operations were used to read and write data between clients and the server. This required careful handling of buffers, partial reads/writes, and ensuring reliable message transmission.
